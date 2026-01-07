@@ -8,12 +8,12 @@
       <div class="inputs">
         <select v-model="novoMes" class="input-mes">
           <option disabled value="">Selecione o mês</option>
-          <option v-for="mes in mesesDisponiveis" :key="mes" :value="mes">
+          <option v-for="mes in mesesDisponiveis" :key="mes" :value="mes" @input="aplicarMascara">
             {{ mes }}
           </option>
         </select>
 
-        <input v-model="novoValor" type="number" placeholder="Valor (R$)" />
+        <input v-model="novoValor" type="text" placeholder="Valor (R$)" />
         
         <button 
           @click="salvarVenda" 
@@ -75,6 +75,15 @@ const chartConfig = ref({
   plot: { animation: { effect: 2, method: 3, sequence: 1, speed: 500 } },
   backgroundColor: "transparent"
 });
+
+const aplicarMascara = (event)=>{
+  let valor = event.target.value;
+  valor = valor.replace(/\D/g,""); // remove caracters
+
+  const numero = Number(valor)/100; // converte para valor considerando centavos
+
+  novoValor.value = numero.toLocaleString('pt-BR', {style: 'currency', currency: 'BRL'});
+}
 
 const chartSeries = ref([]);
 const chartKey = ref(0);
